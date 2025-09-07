@@ -25,6 +25,9 @@ await connectDB();
 
 // Default route
 app.get("/", (req, res) => res.send("API is running"));
+app.get("/home", (req, res) => res.send("Welcome to Shop Hub"));
+
+// Inngest route
 app.use("/api/inngest", serve({ client: inngest, functions }));
 
 
