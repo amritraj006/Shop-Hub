@@ -1,0 +1,20 @@
+# Ignore backend node_modules and environment
+server/node_modules/
+server/.env
+
+# Ignore client node_modules and environment
+client/node_modules/
+client/.env
+
+# Ignore admin node_modules and environment
+admin/node_modules/
+admin/.env
+
+# Ignore common files
+.DS_Store
+logs/
+*.log
+
+# React build output (optional)
+client/build/
+admin/build/
