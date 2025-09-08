@@ -1,15 +1,14 @@
-const mongoose = require("mongoose");
-const connectDB = require("./config/db");
-const Product = require("./models/Product");
-const products = require("./data/products"); // ✅ use require instead of import
+import dotenv from "dotenv";
+import mongoose from "mongoose";
+import connectDB from "./config/db.js";
+import Product from "./models/Product.js";
+import products from "./data/products.js";
 
-// Connect to MongoDB
-connectDB();
+dotenv.config();
 
-// 🚀 Insert function
-const insertData = async () => {
+const run = async () => {
   try {
-    await Product.deleteMany(); // clear old data
+    await connectDB();
     const inserted = await Product.insertMany(products);
     console.log(`${inserted.length} products inserted successfully!`);
     mongoose.connection.close();
@@ -19,4 +18,4 @@ const insertData = async () => {
   }
 };
 
-insertData();
+run();

@@ -1,6 +1,13 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { HeartIcon, Search, ShoppingBagIcon, Menu, X, UserIcon } from "lucide-react";
+import {
+  HeartIcon,
+  Search,
+  ShoppingBagIcon,
+  Menu,
+  X,
+  UserIcon,
+} from "lucide-react";
 import { useAppContext } from "../contexts/AppContext";
 import ThemeToggleBtn from "./ThemeToggleBtn";
 import { useClerk, UserButton, useUser } from "@clerk/clerk-react";
@@ -8,12 +15,13 @@ import { useClerk, UserButton, useUser } from "@clerk/clerk-react";
 const Navbar = ({ theme, setTheme }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
-  const { setOpenSearch } = useAppContext();
+  const { setOpenSearch, setOpenCart, cartCount } = useAppContext(); // ✅ get cartCount
   const { user } = useUser();
   const { openSignIn } = useClerk();
+  
 
   return (
-    <nav className="flex justify-between items-center px-6 sm:px-10 lg:px-20 py-4 sticky top-0 z-20 backdrop-blur-xl bg-white/60 dark:bg-gray-900/70">
+    <nav className="flex justify-between items-center px-6 sm:px-8 lg:px-32 py-4 sticky top-0 z-20 backdrop-blur-xl bg-white/60 dark:bg-gray-900/70">
       {/* Logo */}
       <Link
         to="/"
@@ -47,10 +55,20 @@ const Navbar = ({ theme, setTheme }) => {
           onClick={() => navigate("/like")}
           className="dark:text-white size-6 cursor-pointer hover:scale-110 transition"
         />
-        <ShoppingBagIcon
-          onClick={() => navigate("/cart")}
-          className="dark:text-white size-6 cursor-pointer hover:scale-110 transition"
-        />
+
+        {/* 🛒 Cart Icon with count */}
+        <div
+  onClick={() => setOpenCart(true)}
+  className="relative cursor-pointer hover:scale-110 transition"
+>
+  <ShoppingBagIcon className="dark:text-white size-6" />
+  {cartCount > 0 && (
+    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+      {cartCount}
+    </span>
+  )}
+</div>
+
         <ThemeToggleBtn theme={theme} setTheme={setTheme} />
 
         {!user ? (
@@ -90,15 +108,18 @@ const Navbar = ({ theme, setTheme }) => {
               Login
             </button>
           ) : (
-             <UserButton>
-            <UserButton.MenuItems>
-              <UserButton.Action
-                label='Profile'
-                labelIcon={<UserIcon width={15} />}
-                onClick={() => {navigate('/profile'); scrollTo(0, 0)}}
-              />
-            </UserButton.MenuItems>
-          </UserButton>
+            <UserButton>
+              <UserButton.MenuItems>
+                <UserButton.Action
+                  label="Profile"
+                  labelIcon={<UserIcon width={15} />}
+                  onClick={() => {
+                    navigate("/profile");
+                    scrollTo(0, 0);
+                  }}
+                />
+              </UserButton.MenuItems>
+            </UserButton>
           )}
         </div>
       )}

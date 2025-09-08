@@ -1,6 +1,7 @@
 import { FeaturedProducts, OurCollections } from "../components/FeaturedProducts"
 import FeaturesSection from "../components/FeaturesSection"
 import Hero from "../components/Hero"
+import Loading from "../components/Loading"
 import Newsletter from "../components/Newsletter"
 import Testimonials from "../components/Testimonials"
 
@@ -15,6 +16,7 @@ const Home = () => {
         <OurCollections />
         <Testimonials />
         <Newsletter />
+  
        
        
        

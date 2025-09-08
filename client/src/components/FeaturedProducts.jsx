@@ -1,14 +1,16 @@
 
-import { Star, ShoppingCart, Eye, Clock, TrendingUp, Heart } from 'lucide-react';
+import {  Clock, TrendingUp, } from 'lucide-react';
 import SectionHeader from './SectionHeader';
 
 import ProductCard from './ProductCard';
 import {useNavigate} from 'react-router-dom'
+import { useAppContext } from '../contexts/AppContext';
 
 const FeaturedProducts = () => {
   // Dummy product data
 
   const navigate = useNavigate();
+  const {products} = useAppContext();
 
   return (
     <section className="py-16 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
@@ -23,7 +25,9 @@ const FeaturedProducts = () => {
 
         {/* Products Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      
+             {products.slice(0,4).map((product, index) => (
+                <ProductCard key={index} product={product} />
+              ))}
         </div>
 
         {/* View All Button */}

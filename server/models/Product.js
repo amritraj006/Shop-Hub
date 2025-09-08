@@ -1,7 +1,11 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const productSchema = new mongoose.Schema(
   {
+    _id: {
+      type: mongoose.Schema.Types.ObjectId,
+      auto: true,
+    },
     name: {
       type: String,
       required: true,
@@ -17,13 +21,13 @@ const productSchema = new mongoose.Schema(
     },
     size: {
       type: String,
-      required: true, // since it's single size, keep it required
+      required: true,
     },
     stock: {
       type: Number,
       required: true,
-      default: 0, // starts with 0, admin can update
-      min: 0,     // stock should not go below 0
+      default: 0,
+      min: 0,
     },
     image: {
       type: String,
@@ -37,19 +41,17 @@ const productSchema = new mongoose.Schema(
     category: {
       type: String,
       required: true,
-    }
+    },
   },
   { timestamps: true }
 );
 
-// method to decrease stock when purchase happens
+// decrease stock method
 productSchema.methods.decreaseStock = async function (quantity) {
-  if (this.stock < quantity) {
-    throw new Error("Not enough stock available");
-  }
+  if (this.stock < quantity) throw new Error("Not enough stock available");
   this.stock -= quantity;
   await this.save();
 };
 
 const Product = mongoose.model("Product", productSchema);
-module.exports = Product;
+export default Product;
