@@ -25,9 +25,10 @@ app.get("/home", (req, res) => res.send("Welcome to Shop Hub"));
 
 app.use("/api/inngest", serve({ client: inngest, functions }));
 
-// Product routes ggghhh hhhhvvgvvvvvfdesed
-app.use("/api/products", productRoutes); // use plural "products" for consistency
+// Product routes
+app.use("/api/products", productRoutes); 
 
+// Cart Routes
 app.use("/api/cart", cartRoute);
 
 // Start server

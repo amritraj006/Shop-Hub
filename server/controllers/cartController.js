@@ -142,6 +142,7 @@ const updateCart = async (req, res) => {
   }
 };
 
+//Remove item from cart
 const removeFromCart = async (req, res) => {
   try {
     const { userId, productId } = req.body;
