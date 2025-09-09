@@ -8,7 +8,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://shop-hub-xm7o.onrender.com', // backend running on port 3000
+        target: 'http://localhost:3000', // backend running on port 3000
         changeOrigin: true,
         secure: false,
       },
