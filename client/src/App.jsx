@@ -29,7 +29,6 @@ const App = () => {
   duration={1500} // 1.5 seconds
 />
       {/* Loading Animation */}
-  
       {openSearch && <Search />}
       <Navbar theme={theme} setTheme={setTheme} />
       <Cart isOpen={openCart} onClose={() => setOpenCart(false)} />
