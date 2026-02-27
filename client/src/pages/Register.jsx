@@ -16,7 +16,7 @@ export default function Register() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         // Validation checks
         if (password !== confirmPassword) {
             return toast.error("Passwords do not match", {
@@ -40,7 +40,7 @@ export default function Register() {
         }
 
         setLoading(true);
-        
+
         // Show loading toast
         const loadingToast = toast.loading("Creating your account...", {
             description: "Please wait while we set up your account",
@@ -48,10 +48,10 @@ export default function Register() {
 
         try {
             const success = await register(name, email, password);
-            
+
             // Dismiss loading toast
             toast.dismiss(loadingToast);
-            
+
             if (success) {
                 // Success toast
                 toast.success("Registration successful! 🎉", {
@@ -59,7 +59,7 @@ export default function Register() {
                     duration: 5000,
                     icon: "👋",
                 });
-                
+
                 navigate("/");
             } else {
                 // Error toast
@@ -71,7 +71,7 @@ export default function Register() {
         } catch (error) {
             // Dismiss loading toast
             toast.dismiss(loadingToast);
-            
+
             // Error toast
             toast.error("Registration failed", {
                 description: error.message || "Something went wrong. Please try again.",

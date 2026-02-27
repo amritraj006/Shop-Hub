@@ -15,6 +15,8 @@ const userSchema = new mongoose.Schema(
     ],
     address: { type: String, default: "" },
     phoneNumber: { type: String, default: "" },
+    resetPasswordToken: String,
+    resetPasswordExpires: Date,
   },
   { timestamps: true }
 );

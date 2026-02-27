@@ -14,17 +14,17 @@ export default function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        
+
         // Show loading toast
         const loadingToast = toast.loading("Logging in...");
-        
+
         try {
             const success = await login(email, password);
-            
+
             if (success) {
                 // Dismiss loading toast
                 toast.dismiss(loadingToast);
-                
+
                 // Show success toast
                 toast.success("Login successful! 🎉", {
                     duration: 4000,
@@ -36,12 +36,12 @@ export default function Login() {
                     },
                     icon: "👋",
                 });
-                
+
                 navigate("/");
             } else {
                 // Dismiss loading toast
                 toast.dismiss(loadingToast);
-                
+
                 // Show error toast
                 toast.error("Invalid email or password", {
                     duration: 4000,
@@ -56,7 +56,7 @@ export default function Login() {
         } catch (error) {
             // Dismiss loading toast
             toast.dismiss(loadingToast);
-            
+
             // Show error toast
             toast.error(error.message || "Login failed. Please try again.", {
                 duration: 4000,
@@ -115,6 +115,15 @@ export default function Login() {
                                 disabled={loading}
                             />
                         </div>
+                    </div>
+
+                    <div className="flex justify-end">
+                        <Link
+                            to="/forgot-password"
+                            className="text-xs font-medium text-emerald-600 hover:text-emerald-500 transition-colors"
+                        >
+                            Forgot Password?
+                        </Link>
                     </div>
 
                     <button
