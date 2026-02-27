@@ -18,8 +18,10 @@ import {
   Box
 } from "lucide-react";
 import { toast } from "sonner";
+import { useAdminContext } from "../contexts/AdminContext";
 
 const AddProducts = () => {
+  const { API_URL } = useAdminContext();
   const [product, setProduct] = useState({
     name: "",
     description: "",
@@ -88,7 +90,7 @@ const AddProducts = () => {
     setLoading(true);
 
     try {
-      const res = await axios.post("http://localhost:3000/api/admin/add-product", {
+      const res = await axios.post(`${API_URL}/admin/add-product`, {
         name: product.name.trim(),
         description: product.description.trim(),
         price: Number(product.price),

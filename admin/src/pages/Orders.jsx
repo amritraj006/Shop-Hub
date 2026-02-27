@@ -16,8 +16,10 @@ import {
     Calendar,
     Hash
 } from "lucide-react";
+import { useAdminContext } from "../contexts/AdminContext";
 
 const Orders = () => {
+    const { API_URL } = useAdminContext();
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [updating, setUpdating] = useState(null);
@@ -28,7 +30,7 @@ const Orders = () => {
 
     const fetchOrders = async () => {
         try {
-            const res = await axios.get("http://localhost:3000/api/admin/orders");
+            const res = await axios.get(`${API_URL}/admin/orders`);
             if (res.data.success) {
                 setOrders(res.data.orders);
             }
@@ -43,7 +45,7 @@ const Orders = () => {
     const handleUpdateStatus = async (orderId, status) => {
         setUpdating(orderId);
         try {
-            const res = await axios.put(`http://localhost:3000/api/admin/orders/${orderId}/status`, { status });
+            const res = await axios.put(`${API_URL}/admin/orders/${orderId}/status`, { status });
             if (res.data.success) {
                 setOrders(orders.map(o => o._id === orderId ? { ...o, orderStatus: status } : o));
                 toast.success(`Order #${orderId.slice(-6)} status: ${status}`);
@@ -110,9 +112,9 @@ const Orders = () => {
 
                                 <div className="flex items-center gap-4">
                                     <span className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-[0.15em] shadow-sm border ${order.orderStatus === 'Delivered' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
-                                            order.orderStatus === 'Processing' ? 'bg-blue-50 text-blue-600 border-blue-100' :
-                                                order.orderStatus === 'Shipped' ? 'bg-purple-50 text-purple-600 border-purple-100' :
-                                                    'bg-red-50 text-red-600 border-red-100'
+                                        order.orderStatus === 'Processing' ? 'bg-blue-50 text-blue-600 border-blue-100' :
+                                            order.orderStatus === 'Shipped' ? 'bg-purple-50 text-purple-600 border-purple-100' :
+                                                'bg-red-50 text-red-600 border-red-100'
                                         }`}>
                                         {order.orderStatus}
                                     </span>

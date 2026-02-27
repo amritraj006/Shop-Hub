@@ -17,8 +17,10 @@ import {
     DollarSign
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useAdminContext } from "../contexts/AdminContext";
 
 const Products = () => {
+    const { API_URL } = useAdminContext();
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
@@ -32,7 +34,7 @@ const Products = () => {
 
     const fetchProducts = async () => {
         try {
-            const res = await axios.get("http://localhost:3000/api/products");
+            const res = await axios.get(`${API_URL}/products`);
             setProducts(res.data);
         } catch (err) {
             console.error("Error fetching products:", err);
@@ -45,7 +47,7 @@ const Products = () => {
     const handleDelete = async (id) => {
         if (window.confirm("Are you sure you want to delete this product?")) {
             try {
-                const res = await axios.delete(`http://localhost:3000/api/admin/products/${id}`);
+                const res = await axios.delete(`${API_URL}/admin/products/${id}`);
                 if (res.data.success) {
                     setProducts(products.filter(p => p._id !== id));
                     toast.success("Product deleted successfully");
@@ -66,7 +68,7 @@ const Products = () => {
         e.preventDefault();
         setEditLoading(true);
         try {
-            const res = await axios.put(`http://localhost:3000/api/admin/products/${editingProduct._id}`, editingProduct);
+            const res = await axios.put(`${API_URL}/admin/products/${editingProduct._id}`, editingProduct);
             if (res.data.success) {
                 setProducts(products.map(p => p._id === editingProduct._id ? res.data.product : p));
                 setIsEditModalOpen(false);

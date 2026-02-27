@@ -11,15 +11,17 @@ import {
     ArrowDownRight
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useAdminContext } from "../contexts/AdminContext";
 
 const Dashboard = () => {
+    const { API_URL } = useAdminContext();
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchStats = async () => {
             try {
-                const res = await axios.get("http://localhost:3000/api/admin/stats");
+                const res = await axios.get(`${API_URL}/admin/stats`);
                 if (res.data.success) {
                     setData(res.data);
                 }
@@ -167,9 +169,9 @@ const Dashboard = () => {
                                         </td>
                                         <td className="px-8 py-5">
                                             <span className={`px-3 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-wider shadow-sm border ${order.orderStatus === 'Delivered' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
-                                                    order.orderStatus === 'Processing' ? 'bg-blue-50 text-blue-600 border-blue-100' :
-                                                        order.orderStatus === 'Shipped' ? 'bg-purple-50 text-purple-600 border-purple-100' :
-                                                            'bg-red-50 text-red-600 border-red-100'
+                                                order.orderStatus === 'Processing' ? 'bg-blue-50 text-blue-600 border-blue-100' :
+                                                    order.orderStatus === 'Shipped' ? 'bg-purple-50 text-purple-600 border-purple-100' :
+                                                        'bg-red-50 text-red-600 border-red-100'
                                                 }`}>
                                                 {order.orderStatus}
                                             </span>
