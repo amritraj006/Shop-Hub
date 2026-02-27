@@ -9,17 +9,17 @@ import Testimonials from "../components/Testimonials"
 
 const Home = () => {
   return (
-    <div>
-        <Hero />
-        <FeaturesSection />
-        <FeaturedProducts />
-        <OurCollections />
-        <Testimonials />
-        <Newsletter />
-  
-       
-       
-       
+    <div className="transition-colors duration-500 bg-white dark:bg-gray-900 min-h-screen">
+      <Hero />
+      <FeaturesSection />
+      <FeaturedProducts />
+      <OurCollections />
+      <Testimonials />
+      <Newsletter />
+
+
+
+
     </div>
   )
 }

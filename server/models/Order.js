@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
 
 const orderSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
@@ -12,14 +12,16 @@ const orderSchema = new mongoose.Schema({
   ],
   totalAmount: { type: Number, required: true },
   paymentStatus: { type: String, enum: ['Pending', 'Paid', 'Failed'], default: 'Pending' },
-  orderStatus: { 
-    type: String, 
-    enum: ['Processing', 'Shipped', 'Delivered', 'Cancelled'], 
-    default: 'Processing' 
+  orderStatus: {
+    type: String,
+    enum: ['Processing', 'Shipped', 'Delivered', 'Cancelled'],
+    default: 'Processing'
   },
   paymentMethod: { type: String, enum: ['COD', 'Card', 'UPI', 'NetBanking'], default: 'Card' },
   createdAt: { type: Date, default: Date.now },
   deliveredAt: { type: Date }
 }, { timestamps: true });
 
-module.exports = mongoose.model('Order', orderSchema);
+const Order = mongoose.model("Order", orderSchema);
+
+export default Order;

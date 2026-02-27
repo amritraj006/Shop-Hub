@@ -26,7 +26,7 @@ const AllCollections = () => {
   });
 
   return (
-    <section className="py-16  bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+    <section className="py-16 min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
       <div className="container mx-auto px-8">
         {/* Section Header */}
         <SectionHeader
@@ -41,24 +41,24 @@ const AllCollections = () => {
           {collections.map((collection) => (
             <div
               key={collection.id}
-              className="group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500"
+              className="group relative overflow-hidden rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer"
+              onClick={() => navigate(`/collections/${collection.name}`)}
             >
               <img
                 src={collection.image}
                 alt={collection.name}
-                className="w-full h-80 object-cover group-hover:scale-105 transition-transform duration-500"
+                className="w-full h-80 sm:h-96 object-cover group-hover:scale-[1.03] transition-transform duration-700"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
-              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                <h3 className="text-2xl font-bold mb-2">{collection.name}</h3>
-                <p className="text-blue-200 mb-4">{collection.items}</p>
-                
-<button
-  onClick={() => navigate(`/collections/${collection.name}`)}
-  className="bg-white text-gray-900 hover:bg-gray-100 font-medium py-2 px-6 rounded-lg transition-colors duration-300"
->
-  Explore {collection.name}
-</button>
+              <div className="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/40 to-transparent transition-opacity duration-300 group-hover:opacity-90"></div>
+              <div className="absolute bottom-0 left-0 right-0 p-8 text-white transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
+                <h3 className="text-3xl font-bold mb-2 tracking-tight">{collection.name}</h3>
+                <p className="text-emerald-300 font-medium mb-6">{collection.items}</p>
+
+                <button
+                  className="bg-white/20 backdrop-blur-md border border-white/30 text-white hover:bg-white hover:text-gray-900 font-medium py-3 px-8 rounded-full shadow-lg transition-all duration-300 flex items-center justify-center tracking-wide"
+                >
+                  Explore {collection.name}
+                </button>
               </div>
             </div>
           ))}

@@ -1,17 +1,17 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useAppContext } from "../contexts/AppContext";
 import Loading from "../components/Loading";
-import { useUser } from "@clerk/clerk-react";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import ProductCard from "../components/ProductCard";
 import { MoveRightIcon } from "lucide-react";
 
+
 const ProductDetails = () => {
   const { id } = useParams();
-  const { products, setCartCount, cartUpdated, API_URL } = useAppContext();
-  const { user, isLoaded } = useUser();
+  const navigate = useNavigate();
+  const { products, setCartCount, cartUpdated, API_URL, user, isLoaded } = useAppContext();
 
   const [product, setProduct] = useState(null);
   const [inCart, setInCart] = useState(false);
@@ -43,7 +43,7 @@ const ProductDetails = () => {
   useEffect(() => {
     if (!isLoaded || !user || !product) return;
     axios
-      .get(`${API_URL}/cart/${user.id}`)
+      .get(`${API_URL}/cart/${user._id}`)
       .then((res) => {
         setInCart(res.data.cart.some((item) => item.product._id === product._id));
       })
@@ -61,7 +61,7 @@ const ProductDetails = () => {
     setLoading(true);
     try {
       const res = await axios.post(`${API_URL}/cart/toggle`, {
-        userId: user.id,
+        userId: user._id,
         productId: product._id,
         quantity,
       });
@@ -93,8 +93,8 @@ const ProductDetails = () => {
       <div className="flex flex-col md:flex-row gap-6 lg:gap-10">
         {/* Images */}
         <div className="md:w-1/2">
-          <div className="sticky top-4">
-            <div className="w-full h-80 md:h-96 lg:h-[380px] overflow-hidden rounded-xl bg-gray-100 dark:bg-gray-800 mb-4 relative">
+          <div className="sticky top-24">
+            <div className="w-full h-80 md:h-96 lg:h-[450px] overflow-hidden rounded-3xl bg-white dark:bg-gray-800 shadow-lg border border-gray-100 dark:border-gray-700 mb-6 relative group">
               {imageLoading && (
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="w-10 h-10 sm:w-12 sm:h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
@@ -103,9 +103,8 @@ const ProductDetails = () => {
               <img
                 src={allImages[selectedImage]}
                 alt={product.name}
-                className={`w-full h-full object-contain transition-opacity duration-300 ${
-                  imageLoading ? "opacity-0" : "opacity-100"
-                }`}
+                className={`w-full h-full object-contain p-4 transition-transform duration-700 group-hover:scale-[1.03] ${imageLoading ? "opacity-0" : "opacity-100"
+                  }`}
                 onLoad={() => setImageLoading(false)}
                 onError={(e) => {
                   e.currentTarget.onerror = null;
@@ -117,7 +116,7 @@ const ProductDetails = () => {
             </div>
 
             {allImages.length > 1 && (
-              <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+              <div className="grid grid-cols-4 gap-3">
                 {allImages.map((img, index) => (
                   <button
                     key={index}
@@ -125,16 +124,15 @@ const ProductDetails = () => {
                       setSelectedImage(index);
                       setImageLoading(true);
                     }}
-                    className={`w-full h-20 sm:h-24 overflow-hidden rounded-md bg-gray-100 dark:bg-gray-800 transition-all ${
-                      selectedImage === index
-                        ? "ring-2 ring-emerald-500 dark:ring-emerald-400 scale-105"
-                        : "hover:ring-1 hover:ring-gray-300 dark:hover:ring-gray-600"
-                    }`}
+                    className={`w-full aspect-square overflow-hidden rounded-2xl bg-white dark:bg-gray-800 shadow-sm border ${selectedImage === index
+                      ? "border-emerald-500 ring-2 ring-emerald-500/20 scale-105"
+                      : "border-gray-200 dark:border-gray-700 hover:border-emerald-300 dark:hover:border-emerald-700"
+                      } transition-all duration-300`}
                   >
                     <img
                       src={img}
                       alt={`${product.name} view ${index + 1}`}
-                      className="w-full h-full object-cover object-center"
+                      className="w-full h-full object-cover object-center p-2"
                       loading="lazy"
                       onError={(e) => {
                         e.currentTarget.onerror = null;
@@ -169,25 +167,25 @@ const ProductDetails = () => {
             </div>
 
             {!inCart && (
-              <div className="mb-4">
-                <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-1">
+              <div className="mb-8">
+                <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-2">
                   Quantity
                 </h3>
-                <div className="flex items-center w-28 sm:w-32 border border-gray-300 dark:border-gray-600 rounded-md overflow-hidden">
+                <div className="flex items-center w-32 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full shadow-sm overflow-hidden p-1">
                   <button
                     onClick={() => handleQuantityChange(-1)}
                     disabled={quantity <= 1}
-                    className="flex-1 py-1 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                    className="w-8 h-8 flex items-center justify-center rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                   >
                     -
                   </button>
-                  <span className="flex-1 text-center py-1 text-gray-900 dark:text-white">
+                  <span className="flex-1 text-center font-medium text-gray-900 dark:text-white">
                     {quantity}
                   </span>
                   <button
                     onClick={() => handleQuantityChange(1)}
                     disabled={quantity >= 10}
-                    className="flex-1 py-1 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                    className="w-8 h-8 flex items-center justify-center rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                   >
                     +
                   </button>
@@ -195,20 +193,25 @@ const ProductDetails = () => {
               </div>
             )}
 
-            <div className="flex flex-col sm:flex-row gap-3 mb-6">
+            <div className="flex flex-col sm:flex-row gap-4 mb-8">
               <button
                 onClick={handleToggleCart}
                 disabled={loading}
-                className={`flex-1 py-3 rounded-lg text-white font-medium transition-colors ${
-                  inCart
-                    ? "bg-gray-600 hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600"
-                    : "bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-700 dark:hover:bg-emerald-600"
-                } disabled:opacity-50 disabled:cursor-not-allowed`}
+                className={`flex-1 py-3.5 rounded-full font-medium shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-center ${inCart
+                  ? "bg-gray-800 dark:bg-gray-700 text-white"
+                  : "bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700"
+                  } disabled:opacity-50 disabled:cursor-not-allowed`}
               >
                 {loading ? "Processing..." : inCart ? "Remove from Cart" : "Add to Cart"}
               </button>
 
-              <button className="flex-1 py-3 border border-gray-300 dark:border-gray-600 rounded-lg font-medium text-gray-700 dark:text-gray-300 hover:bg-emerald-500 dark:hover:bg-emerald-600 hover:text-white dark:hover:text-white transition-colors">
+              <button
+                onClick={() => {
+                  if (!user) return toast.error("Please log in to purchase items.");
+                  navigate("/checkout", { state: { buyNowProduct: product, buyNowQuantity: quantity } });
+                }}
+                className="flex-1 py-3.5 bg-gradient-to-r from-emerald-600 to-green-500 hover:from-emerald-500 hover:to-green-400 text-white rounded-full font-medium shadow-[0_4px_14px_0_rgba(16,185,129,0.39)] hover:shadow-[0_6px_20px_rgba(16,185,129,0.23)] hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-center"
+              >
                 Buy Now
               </button>
             </div>

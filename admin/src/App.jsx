@@ -1,11 +1,11 @@
 
-import AdminAddProducts from './components/AdminAddProducts'
+import AddProducts from './components/AddProducts'
 
 const App = () => {
   return (
     <div>
       
-      <AdminAddProducts />
+    <AddProducts />
     </div>
   )
 }

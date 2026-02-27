@@ -12,7 +12,10 @@ import ProductDetails from './pages/ProductDetails'
 import Cart from './components/Cart'
 import AllCollections from './pages/AllCollections'
 import SubCategory from './pages/SubCategory'
-
+import Login from './pages/Login'
+import Register from './pages/Register'
+import Profile from './pages/Profile'
+import Checkout from './pages/Checkout'
 
 const App = () => {
   const [theme, setTheme] = useState(localStorage.getItem('theme') ? localStorage.getItem('theme') : 'light')
@@ -22,12 +25,12 @@ const App = () => {
 
   return (
     <div className='dark:bg-black relative'>
-      <Toaster 
-  position="top-center" 
-  expand={false} 
-  richColors 
-  duration={1500} // 1.5 seconds
-/>
+      <Toaster
+        position="top-center"
+        expand={false}
+        richColors
+        duration={1500} // 1.5 seconds
+      />
       {/* Loading Animation */}
       {openSearch && <Search />}
       <Navbar theme={theme} setTheme={setTheme} />
@@ -37,9 +40,12 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path='/products' element={<ProductList />} />
         <Route path='/product/:id' element={<ProductDetails />} />
-        <Route path='/collections' element={<AllCollections/>}/>
+        <Route path='/collections' element={<AllCollections />} />
         <Route path="/collections/:category" element={<SubCategory />} />
-
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/checkout" element={<Checkout />} />
       </Routes>
 
       <Footer />

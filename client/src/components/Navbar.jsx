@@ -10,15 +10,19 @@ import {
 } from "lucide-react";
 import { useAppContext } from "../contexts/AppContext";
 import ThemeToggleBtn from "./ThemeToggleBtn";
-import { useClerk, UserButton, useUser } from "@clerk/clerk-react";
+import { LogOut } from "lucide-react";
+import { toast } from "sonner";
 
 const Navbar = ({ theme, setTheme }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
-  const { setOpenSearch, setOpenCart, cartCount } = useAppContext(); // ✅ get cartCount
-  const { user } = useUser();
-  const { openSignIn } = useClerk();
-  
+  const { setOpenSearch, setOpenCart, cartCount, user, logout } = useAppContext(); // ✅ get cartCount
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
+
 
   return (
     <nav className="flex justify-between items-center px-6 sm:px-8 lg:px-32 py-4 sticky top-0 z-20 backdrop-blur-xl bg-white/60 dark:bg-gray-900/70">
@@ -40,9 +44,18 @@ const Navbar = ({ theme, setTheme }) => {
 
       {/* Desktop Links */}
       <div className="hidden sm:flex gap-8 text-gray-700 dark:text-white text-sm font-medium">
-        <Link to="/" className="hover:text-emerald-600">Home</Link>
-        <Link to="/products" className="hover:text-emerald-600">All Products</Link>
-        <Link to="/collections" className="hover:text-emerald-600">Collections</Link>
+        <Link to="/" className="relative group p-1">
+          <span className="group-hover:text-emerald-600 transition-colors duration-300">Home</span>
+          <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-gradient-to-r from-green-400 to-emerald-600 transition-all duration-300 group-hover:w-full"></span>
+        </Link>
+        <Link to="/products" className="relative group p-1">
+          <span className="group-hover:text-emerald-600 transition-colors duration-300">All Products</span>
+          <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-gradient-to-r from-green-400 to-emerald-600 transition-all duration-300 group-hover:w-full"></span>
+        </Link>
+        <Link to="/collections" className="relative group p-1">
+          <span className="group-hover:text-emerald-600 transition-colors duration-300">Collections</span>
+          <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-gradient-to-r from-green-400 to-emerald-600 transition-all duration-300 group-hover:w-full"></span>
+        </Link>
       </div>
 
       {/* Actions */}
@@ -51,35 +64,55 @@ const Navbar = ({ theme, setTheme }) => {
           onClick={() => setOpenSearch(true)}
           className="dark:text-white size-6 cursor-pointer hover:scale-110 transition"
         />
-        <HeartIcon
-          onClick={() => navigate("/like")}
-          className="dark:text-white size-6 cursor-pointer hover:scale-110 transition"
-        />
+
 
         {/* 🛒 Cart Icon with count */}
         <div
-  onClick={() => setOpenCart(true)}
-  className="relative cursor-pointer hover:scale-110 transition"
->
-  <ShoppingBagIcon className="dark:text-white size-6" />
-  {cartCount > 0 && (
-    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-      {cartCount}
-    </span>
-  )}
-</div>
+          onClick={() => setOpenCart(true)}
+          className="relative cursor-pointer hover:scale-110 transition"
+        >
+          <ShoppingBagIcon className="dark:text-white size-6" />
+          {cartCount > 0 && (
+            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+              {cartCount}
+            </span>
+          )}
+        </div>
 
         <ThemeToggleBtn theme={theme} setTheme={setTheme} />
 
         {!user ? (
-          <button
-            onClick={openSignIn}
-            className="hidden sm:flex items-center gap-2 text-sm bg-gradient-to-r from-green-400 to-emerald-600 text-white px-5 py-2 rounded-full hover:scale-105 transition"
-          >
-            Login
-          </button>
+          <div className="hidden sm:flex items-center gap-2">
+            <button
+              onClick={() => navigate('/login')}
+              className="text-sm bg-gradient-to-r from-green-400 to-emerald-600 text-white px-5 py-2 rounded-full hover:scale-105 transition"
+            >
+              Login
+            </button>
+            <button
+              onClick={() => navigate('/register')}
+              className="text-sm border border-emerald-500 text-emerald-600 dark:text-emerald-400 px-5 py-2 rounded-full hover:scale-105 transition"
+            >
+              Register
+            </button>
+          </div>
         ) : (
-          <UserButton />
+          <div className="hidden sm:flex items-center gap-4">
+            <button
+              onClick={() => navigate('/profile')}
+              className="flex items-center gap-2 text-sm text-gray-700 dark:text-white hover:text-emerald-600 transition"
+            >
+              <UserIcon className="w-5 h-5" />
+              <span className="font-medium">{user.name.split(" ")[0]}</span>
+            </button>
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-1 text-sm text-red-500 hover:text-red-700 transition"
+              title="Logout"
+            >
+              <LogOut className="w-5 h-5" />
+            </button>
+          </div>
         )}
 
         {/* Mobile Menu Button */}
@@ -98,28 +131,50 @@ const Navbar = ({ theme, setTheme }) => {
           <Link to="/products" onClick={() => setSidebarOpen(false)} className="hover:text-emerald-600">All Products</Link>
           <Link to="/collections" onClick={() => setSidebarOpen(false)} className="hover:text-emerald-600">Collections</Link>
           {!user ? (
-            <button
-              onClick={() => {
-                setSidebarOpen(false);
-                openSignIn();
-              }}
-              className="w-full text-center bg-gradient-to-r from-green-400 to-emerald-600 text-white py-2 rounded-full hover:scale-105 transition"
-            >
-              Login
-            </button>
+            <div className="w-full flex gap-3">
+              <button
+                onClick={() => {
+                  setSidebarOpen(false);
+                  navigate('/login');
+                }}
+                className="w-1/2 text-center bg-gradient-to-r from-green-400 to-emerald-600 text-white py-2 rounded-full hover:scale-105 transition"
+              >
+                Login
+              </button>
+              <button
+                onClick={() => {
+                  setSidebarOpen(false);
+                  navigate('/register');
+                }}
+                className="w-1/2 text-center border border-emerald-500 text-emerald-600 dark:text-emerald-400 py-2 rounded-full hover:scale-105 transition"
+              >
+                Register
+              </button>
+            </div>
           ) : (
-            <UserButton>
-              <UserButton.MenuItems>
-                <UserButton.Action
-                  label="Profile"
-                  labelIcon={<UserIcon width={15} />}
-                  onClick={() => {
-                    navigate("/profile");
-                    scrollTo(0, 0);
-                  }}
-                />
-              </UserButton.MenuItems>
-            </UserButton>
+            <div className="w-full flex flex-col gap-4">
+              <button
+                onClick={() => {
+                  setSidebarOpen(false);
+                  navigate("/profile");
+                  scrollTo(0, 0);
+                }}
+                className="w-full flex items-center gap-3 text-gray-700 dark:text-white"
+              >
+                <UserIcon width={20} />
+                Profile
+              </button>
+              <button
+                onClick={() => {
+                  setSidebarOpen(false);
+                  handleLogout();
+                }}
+                className="w-full flex items-center gap-3 text-red-500"
+              >
+                <LogOut width={20} />
+                Logout
+              </button>
+            </div>
           )}
         </div>
       )}
