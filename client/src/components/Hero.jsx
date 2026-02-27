@@ -11,7 +11,7 @@ const Hero = () => {
       title: "Men's Collection",
       description: "Explore the latest trends in men's fashion.",
       image:
-        "https://images.unsplash.com/photo-1617137968427-85924d800a22?auto=format&fit=crop&w=2070&q=80",
+        "https://www.pothys.com/cdn/shop/articles/BB-1_3eebc35a-84af-4083-ab09-b5d87e8cec65.jpg?v=1770322187",
       cta: "Shop Mens",
       category: "mens",
       bgGradient:

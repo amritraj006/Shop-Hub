@@ -123,11 +123,12 @@ const Cart = () => {
             </p>
           ) : (
             cartItems.map((item) => {
-              const product = item.product || item.productId;
+              const p = item.product || item.productId;
+              if (!p) return null; // Defensive check for orphaned items
 
               return (
                 <div
-                  key={product._id}
+                  key={p._id}
                   className="flex items-center gap-3 mb-4 border-b border-gray-200 dark:border-gray-700 pb-3"
                 >
                   <img

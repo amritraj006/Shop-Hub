@@ -27,11 +27,13 @@ const addToCart = async (req, res) => {
     const updatedUser = await User.findById(userId).populate("cart.productId");
 
     res.json({
-      cart: updatedUser.cart.map((item) => ({
-        _id: item._id,
-        quantity: item.quantity,
-        product: item.productId,
-      })),
+      cart: updatedUser.cart
+        .filter((item) => item.productId) // Skip orphaned items
+        .map((item) => ({
+          _id: item._id,
+          quantity: item.quantity,
+          product: item.productId,
+        })),
     });
   } catch (err) {
     console.error("Add to cart error:", err.message);
@@ -40,10 +42,10 @@ const addToCart = async (req, res) => {
 };
 
 const checkCartItems = async (req, res) => {
-    try {
+  try {
     const { userId } = req.params;
 
-    const user = await User.findById(userId).populate("cart.productId"); 
+    const user = await User.findById(userId).populate("cart.productId");
     // populates product details in the cart
 
     if (!user) {
@@ -51,11 +53,13 @@ const checkCartItems = async (req, res) => {
     }
 
     res.json({
-      cart: user.cart.map((item) => ({
-        _id: item._id,
-        quantity: item.quantity,
-        product: item.productId, // populated product details
-      })),
+      cart: user.cart
+        .filter((item) => item.productId) // Skip orphaned items
+        .map((item) => ({
+          _id: item._id,
+          quantity: item.quantity,
+          product: item.productId, // populated product details
+        })),
     });
   } catch (err) {
     console.error("Error fetching cart:", err.message);
@@ -64,41 +68,42 @@ const checkCartItems = async (req, res) => {
 }
 
 const toggleCart = async (req, res) => {
-    try {
+  try {
     const { userId, productId, quantity } = req.body;
 
     if (!userId || !productId) {
       return res.status(400).json({ message: "Missing userId or productId" });
     }
 
-    const user = await User.findById(userId); // Clerk userId is stored as _id in your User schema
+    const user = await User.findById(userId).populate("cart.productId");
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
     const existing = user.cart.find(
-      (item) => item.productId.toString() === productId
+      (item) => item.productId?._id?.toString() === productId || item.productId?.toString() === productId
     );
 
     if (existing) {
       // remove
       user.cart = user.cart.filter(
-        (item) => item.productId.toString() !== productId
+        (item) => (item.productId?._id?.toString() || item.productId?.toString()) !== productId
       );
       await user.save();
       return res.json({
         message: "Removed from cart",
-        cart: user.cart,
+        cart: user.cart.filter(i => i.productId),
         inCart: false,
       });
     } else {
       // add
       user.cart.push({ productId, quantity });
       await user.save();
+      const updatedUser = await User.findById(userId).populate("cart.productId");
       return res.json({
         message: "Added to cart",
-        cart: user.cart,
+        cart: updatedUser.cart.filter(i => i.productId),
         inCart: true,
       });
     }
@@ -130,11 +135,13 @@ const updateCart = async (req, res) => {
     const updatedUser = await User.findById(userId).populate("cart.productId");
 
     res.json({
-      cart: updatedUser.cart.map((item) => ({
-        _id: item._id,
-        quantity: item.quantity,
-        product: item.productId,
-      })),
+      cart: updatedUser.cart
+        .filter((item) => item.productId)
+        .map((item) => ({
+          _id: item._id,
+          quantity: item.quantity,
+          product: item.productId,
+        })),
     });
   } catch (err) {
     console.error("Update cart error:", err.message);
@@ -159,11 +166,13 @@ const removeFromCart = async (req, res) => {
     const updatedUser = await User.findById(userId).populate("cart.productId");
 
     res.json({
-      cart: updatedUser.cart.map((item) => ({
-        _id: item._id,
-        quantity: item.quantity,
-        product: item.productId,
-      })),
+      cart: updatedUser.cart
+        .filter((item) => item.productId)
+        .map((item) => ({
+          _id: item._id,
+          quantity: item.quantity,
+          product: item.productId,
+        })),
     });
   } catch (err) {
     console.error("Remove cart error:", err.message);
@@ -171,4 +180,4 @@ const removeFromCart = async (req, res) => {
   }
 };
 
-export { addToCart, checkCartItems, toggleCart, updateCart,  removeFromCart};
+export { addToCart, checkCartItems, toggleCart, updateCart, removeFromCart };

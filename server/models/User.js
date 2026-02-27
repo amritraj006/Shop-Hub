@@ -13,6 +13,8 @@ const userSchema = new mongoose.Schema(
         quantity: { type: Number, default: 1, min: 1 },
       },
     ],
+    address: { type: String, default: "" },
+    phoneNumber: { type: String, default: "" },
   },
   { timestamps: true }
 );

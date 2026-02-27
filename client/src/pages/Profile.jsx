@@ -3,7 +3,7 @@ import { useAppContext } from "../contexts/AppContext";
 import axios from "axios";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-import { User, Lock, Mail, Edit3, ShoppingBag, Package, Calendar } from "lucide-react";
+import { User, Lock, Mail, Edit3, ShoppingBag, Package, Calendar, Truck } from "lucide-react";
 import dayjs from "dayjs";
 
 const Profile = () => {
@@ -18,6 +18,8 @@ const Profile = () => {
     const [formData, setFormData] = useState({
         name: "",
         email: "",
+        address: "",
+        phoneNumber: "",
         password: "",
     });
 
@@ -25,7 +27,13 @@ const Profile = () => {
         if (!user && !localStorage.getItem("shopToken")) {
             navigate("/login");
         } else if (user) {
-            setFormData({ name: user.name, email: user.email, password: "" });
+            setFormData({
+                name: user.name,
+                email: user.email,
+                address: user.address || "",
+                phoneNumber: user.phoneNumber || "",
+                password: ""
+            });
         }
     }, [user, navigate]);
 
@@ -109,6 +117,14 @@ const Profile = () => {
                                 <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Email Address</p>
                                 <p className="text-xl text-gray-800 dark:text-white font-semibold">{user.email}</p>
                             </div>
+                            <div className="space-y-2">
+                                <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Phone Number</p>
+                                <p className="text-xl text-gray-800 dark:text-white font-semibold">{user.phoneNumber || "Not provided"}</p>
+                            </div>
+                            <div className="space-y-2 sm:col-span-2">
+                                <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Delivery Address</p>
+                                <p className="text-xl text-gray-800 dark:text-white font-semibold">{user.address || "No address saved"}</p>
+                            </div>
                             <div className="space-y-2 sm:col-span-2">
                                 <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Password</p>
                                 <p className="text-xl text-gray-800 dark:text-white font-semibold flex items-center gap-2">
@@ -142,6 +158,31 @@ const Profile = () => {
                                     onChange={handleChange}
                                     className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition"
                                     required
+                                />
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                                    <Edit3 size={16} /> Phone Number
+                                </label>
+                                <input
+                                    type="text"
+                                    name="phoneNumber"
+                                    placeholder="Enter your phone number"
+                                    value={formData.phoneNumber}
+                                    onChange={handleChange}
+                                    className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition"
+                                />
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                                    <Truck size={16} /> Delivery Address
+                                </label>
+                                <textarea
+                                    name="address"
+                                    placeholder="Enter your full delivery address"
+                                    value={formData.address}
+                                    onChange={handleChange}
+                                    className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition min-h-[100px]"
                                 />
                             </div>
                             <div className="space-y-1">

@@ -2,7 +2,10 @@ import Order from "../models/Order.js";
 import Payment from "../models/Payment.js";
 import Product from "../models/Product.js";
 import User from "../models/User.js";
+import Stripe from "stripe";
+import dotenv from "dotenv";
 
+dotenv.config();
 // @desc    Create new order & process dummy payment
 // @route   POST /api/orders
 // @access  Private
@@ -59,7 +62,7 @@ export const createOrder = async (req, res) => {
             items: orderItems,
             totalAmount,
             paymentMethod: req.body.paymentMethod || 'Card',
-            paymentStatus: 'Paid', // Assuming dummy payment succeeds immediately
+            paymentStatus: (req.body.paymentStatus === 'Success' || req.body.paymentStatus === 'Paid') ? 'Paid' : 'Pending',
             orderStatus: 'Processing'
         });
 
@@ -69,9 +72,9 @@ export const createOrder = async (req, res) => {
         const payment = new Payment({
             order: createdOrder._id,
             paymentMethod: createdOrder.paymentMethod,
-            paymentStatus: 'Success',
+            paymentStatus: (req.body.paymentStatus === 'Success' || req.body.paymentStatus === 'Paid') ? 'Success' : 'Pending',
             amountPaid: totalAmount,
-            transactionId: `DUMMY_TXN_${Math.random().toString(36).substring(2, 10).toUpperCase()}`
+            transactionId: req.body.transactionId || `DUMMY_TXN_${Math.random().toString(36).substring(2, 10).toUpperCase()}`
         });
         await payment.save();
 
@@ -112,6 +115,74 @@ export const getUserOrders = async (req, res) => {
         res.json({ success: true, orders });
     } catch (error) {
         console.error("Get User Orders Error:", error.message);
+        res.status(500).json({ success: false, message: "Server Error" });
+    }
+};
+
+// @desc    Create Stripe payment intent
+// @route   POST /api/orders/create-payment-intent
+// @access  Private
+export const createPaymentIntent = async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+
+        const isBuyNow = Boolean(req.body.buyNowItem);
+
+        // Ensure there is something to checkout (either Buy Now or Cart items)
+        if (!isBuyNow && user.cart.length === 0) {
+            return res.status(400).json({ success: false, message: "Cart is empty" });
+        }
+
+        // 1. Validate items and calculate total
+        let subTotal = 0;
+        const itemsToProcess = isBuyNow ? [req.body.buyNowItem] : user.cart;
+
+        for (const item of itemsToProcess) {
+            // For Buy Now, frontend might pass productId. For Cart, it's already structured as item.productId
+            const lookupId = item.productId || item.product;
+            const product = await Product.findById(lookupId);
+
+            if (!product) {
+                return res.status(404).json({ success: false, message: `Product not found` });
+            }
+
+            if (product.stock < item.quantity) {
+                return res.status(400).json({
+                    success: false,
+                    message: `Insufficient stock for ${product.name}`
+                });
+            }
+
+            subTotal += product.price * item.quantity;
+        }
+
+        const shipping = subTotal > 150 ? 0 : 15;
+        const tax = subTotal * 0.05; // 5% dummy tax
+        const orderTotal = subTotal + shipping + tax;
+
+        // Convert to cents for Stripe
+        const amountInCents = Math.round(orderTotal * 100);
+
+        const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+        const paymentIntent = await stripe.paymentIntents.create({
+            amount: amountInCents,
+            currency: 'usd',
+            metadata: {
+                userId: req.user.id.toString(),
+                isBuyNow: isBuyNow.toString(),
+            }
+        });
+
+        res.json({
+            success: true,
+            clientSecret: paymentIntent.client_secret
+        });
+
+    } catch (error) {
+        console.error("Create Payment Intent Error:", error.message);
         res.status(500).json({ success: false, message: "Server Error" });
     }
 };

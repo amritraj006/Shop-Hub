@@ -1,4 +1,4 @@
-import { Truck, Shield, Star, RefreshCw, Users, Award, Heart, Clock} from 'lucide-react';
+import { Truck, Shield, Star, RefreshCw, Users, Award, Heart, Clock } from 'lucide-react';
 import CardComponent from './CardComponent';
 import SectionHeader from './SectionHeader';
 import { Circle } from 'lucide-react';
@@ -77,10 +77,10 @@ const FeaturesSection = () => {
     <section className="relative py-20 bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 transition-colors duration-500 overflow-hidden">
       {/* Background decorative elements */}
       <div className="absolute top-0 left-0 w-full h-72 bg-gradient-to-r from-blue-500/5 to-cyan-500/5 dark:from-blue-500/10 dark:to-cyan-500/10 transform -skew-y-3 -translate-y-24"></div>
-      
+
       <div className="relative container mx-auto px-8">
         {/* Section Header */}
-        <SectionHeader icon={Circle} badgeText="Why Choose Us" title="Experience the Difference" description="We're committed to providing an exceptional shopping experience with premium services that put you first."/>
+        <SectionHeader icon={Circle} badgeText="Why Choose Us" title="Experience the Difference" description="We're committed to providing an exceptional shopping experience with premium services that put you first." />
 
         {/* Features Grid using CardComponent */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
@@ -105,7 +105,7 @@ const FeaturesSection = () => {
           <div className="absolute inset-0 opacity-5">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,_rgba(255,255,255,0.15)_1px,_transparent_0)] bg-[size:20px_20px]"></div>
           </div>
-          
+
           <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
               <div key={index} className="text-center">

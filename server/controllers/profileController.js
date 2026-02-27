@@ -10,6 +10,8 @@ export const updateUserProfile = async (req, res) => {
 
         if (user) {
             user.name = req.body.name || user.name;
+            user.address = req.body.address !== undefined ? req.body.address : user.address;
+            user.phoneNumber = req.body.phoneNumber !== undefined ? req.body.phoneNumber : user.phoneNumber;
 
             // Check if email already exists
             if (req.body.email && req.body.email !== user.email) {
@@ -34,6 +36,8 @@ export const updateUserProfile = async (req, res) => {
                     name: updatedUser.name,
                     email: updatedUser.email,
                     image: updatedUser.image,
+                    address: updatedUser.address,
+                    phoneNumber: updatedUser.phoneNumber,
                 },
             });
         } else {
